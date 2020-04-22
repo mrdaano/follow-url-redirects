@@ -38,11 +38,139 @@ describe('follow-url-redirects', () => {
         expect((await followRedirects(url))).to.be.eql(expected);
     });
 
-    it('Should follow to the right url and returns the right object with a 301 redirect also a location url starting with / should work', async ()  => {
+    it('Should follow to the correct url and returns the correct object with a 301 redirect also a location url starting with / should work', async ()  => {
         const url = `${baseUrl}redirect/301`;
         const expected = [
             {
                 url: url,
+                code: 301
+            },
+            {
+                url: `${baseUrl}hello`,
+                code: 200
+            }
+        ];
+
+        expect((await followRedirects(url))).to.be.eql(expected);
+    });
+
+    it('Should follow to the correct url and returns the correct object with a 302 redirect', async ()  => {
+        const url = `${baseUrl}redirect/302`;
+        const expected = [
+            {
+                url: url,
+                code: 302
+            },
+            {
+                url: `${baseUrl}hello`,
+                code: 200
+            }
+        ];
+
+        expect((await followRedirects(url))).to.be.eql(expected);
+    });
+
+    it('Should follow to the correct url and returns the correct object with a 303 redirect', async ()  => {
+        const url = `${baseUrl}redirect/303`;
+        const expected = [
+            {
+                url: url,
+                code: 303
+            },
+            {
+                url: `${baseUrl}hello`,
+                code: 200
+            }
+        ];
+
+        expect((await followRedirects(url))).to.be.eql(expected);
+    });
+
+    it('Should follow to the correct url and returns the correct object with a 307 redirect', async ()  => {
+        const url = `${baseUrl}redirect/307`;
+        const expected = [
+            {
+                url: url,
+                code: 307
+            },
+            {
+                url: `${baseUrl}hello`,
+                code: 200
+            }
+        ];
+
+        expect((await followRedirects(url))).to.be.eql(expected);
+    });
+
+    it('Should follow to the correct url and returns the correct object with a 308 redirect', async ()  => {
+        const url = `${baseUrl}redirect/308`;
+        const expected = [
+            {
+                url: url,
+                code: 308
+            },
+            {
+                url: `${baseUrl}hello`,
+                code: 200
+            }
+        ];
+
+        expect((await followRedirects(url))).to.be.eql(expected);
+    });
+
+    it('Should chain redirects and return the correct opbject', async ()  => {
+        const url = `${baseUrl}redirect/chain`;
+        const expected = [
+            {
+                url: url,
+                code: 301
+            },
+            {
+                url: `${baseUrl}redirect/301`,
+                code: 301
+            },
+            {
+                url: `${baseUrl}hello`,
+                code: 200
+            }
+        ];
+
+        expect((await followRedirects(url))).to.be.eql(expected);
+    });
+
+    it('Should follow redirects on slower (server-side) connection and return correct object', async ()  => {
+        const url = `${baseUrl}redirect/slow`;
+        const expected = [
+            {
+                url: url,
+                code: 301
+            },
+            {
+                url: `${baseUrl}redirect/301`,
+                code: 301
+            },
+            {
+                url: `${baseUrl}hello`,
+                code: 200
+            }
+        ];
+
+        expect((await followRedirects(url))).to.be.eql(expected);
+    });
+
+    it('Should follow a chain of slower redirects and return correct object', async ()  => {
+        const url = `${baseUrl}redirect/slow-chain`;
+        const expected = [
+            {
+                url: url,
+                code: 301
+            },
+            {
+                url: `${baseUrl}redirect/slow`,
+                code: 301
+            },
+            {
+                url: `${baseUrl}redirect/301`,
                 code: 301
             },
             {
