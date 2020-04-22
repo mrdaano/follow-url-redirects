@@ -24,11 +24,17 @@ function followRedirects(url, opts = {
 
             const send = (urlToGo.protocol === 'https:' ? https : http).request;
 
-            const request = send({
+            const requestData = {
                 hostname: urlToGo.hostname,
                 path: urlToGo.pathname,
                 timeout: opts.timeout
-            });
+            };
+
+            if (urlToGo.port) {
+                requestData.port = urlToGo.port;
+            }
+
+            const request = send(requestData);
 
             request.on('error', (err) => {
                 request.abort();
@@ -36,15 +42,23 @@ function followRedirects(url, opts = {
             });
 
             request.on('response', (res) => {
-                const { location } = res.headers;
+                let { location } = res.headers;
 
-                redirectChain.push(urlToGo);
+                redirectChain.push({
+                    url: urlToGo.toString(),
+                    code: res.statusCode
+                });
 
                 if (location && isRedirect(res.statusCode)) {
 
                     if (requestCounter >= opts.maxRedirects) {
                         reject(new Error(`maximum redirect reached at: ${urlToGo}`));
                         return;
+                    }
+
+                    if (location.startsWith('/')) {
+                        urlToGo.pathname = location;
+                        location = urlToGo;
                     }
 
                     requestCounter++;
