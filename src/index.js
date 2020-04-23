@@ -1,13 +1,20 @@
 const http = require('http');
 const https = require('https')
 
-function followRedirects(url, opts = {
-    timeout: 10 * 1000,
-    maxRedirects: 10
-}) {
+/**
+ * Follows all 300x errors
+ * @param {string} url 
+ * @param {object} opts 
+ */
+function followRedirects(url, opts = {}) {
     if (!url || url.trim() === '' || !url.startsWith('http')) {
-        throw new Error('Please enter a http or https url');
+        return Promise.reject(new Error('Please enter a http or https url'));
     }
+
+    opts = Object.assign({
+        timeout: 10 * 1000,
+        maxRedirects: 10
+    }, opts);
 
     const isRedirect = code => [301, 302, 303, 307, 308].includes(code);
 
@@ -52,7 +59,7 @@ function followRedirects(url, opts = {
                 if (location && isRedirect(res.statusCode)) {
 
                     if (requestCounter >= opts.maxRedirects) {
-                        reject(new Error(`maximum redirect reached at: ${urlToGo}`));
+                        reject(new Error('Redirect limit reached'));
                         return;
                     }
 

@@ -4,6 +4,14 @@ class MockServer {
     constructor(port = 13376) {
         this.server = http.createServer(this._router);
         this.port = port;
+
+        this.server.keepAliveTimeout = 1000;
+		this.server.on('error', err => {
+			console.log(err.stack);
+		});
+		this.server.on('connection', socket => {
+			socket.setTimeout(1500);
+		});
     }
 
     start(cb) {
@@ -83,3 +91,10 @@ class MockServer {
 }
 
 module.exports = MockServer;
+
+if (require.main === module) {
+	const server = new MockServer(1337);
+	server.start(() => {
+		console.log(`Server started listening at port ${server.port}`);
+	});
+}

@@ -17,13 +17,29 @@ after((done) => {
 });
 
 describe('follow-url-redirects', () => {
-    it('Throws error when no url is given', () => {
-        expect(followRedirects.bind(this, '')).to.throw(Error, 'Please enter a http or https url');
+    it('Should reject with an error when no url is given', async () => {
+        try {
+            await followRedirects('');
+        } catch(error) {
+            expect(error).to.be.an.instanceOf(Error);
+            expect(error.message).to.be.equal('Please enter a http or https url');
+        }
     });
 
-    it('Throws error when a invalid url is given', () => {
-        expect(followRedirects.bind(this, 'localhost')).to.throw(Error, 'Please enter a http or https url');
-        expect(followRedirects.bind(this, 'ftp://localhost')).to.throw(Error, 'Please enter a http or https url');
+    it('Should reject with an error when a invalid url is given', async () => {
+        try {
+            await followRedirects('localhost');
+        } catch(error) {
+            expect(error).to.be.an.instanceOf(Error);
+            expect(error.message).to.be.equal('Please enter a http or https url');
+        }
+
+        try {
+            await followRedirects('ftp://localhost');
+        } catch(error) {
+            expect(error).to.be.an.instanceOf(Error);
+            expect(error.message).to.be.equal('Please enter a http or https url');
+        }
     });
 
     it('Returns array with objects with baseurl and status code (link status code 200)', async () => {
@@ -180,5 +196,31 @@ describe('follow-url-redirects', () => {
         ];
 
         expect((await followRedirects(url))).to.be.eql(expected);
+    });
+
+    it('Should return only the redirect location when there is no location header set', async () => {
+        const url = `${baseUrl}redirect/no-location`;
+        const expected = [
+            {
+                url: url,
+                code: 301
+            }
+        ];
+
+        expect((await followRedirects(url))).to.be.eql(expected);
+    });
+
+    it('Should throw a error when max redirect limit is reached', async () => {
+        const url = `${baseUrl}redirect/slow`;
+        const options = {
+            maxRedirects: 1
+        };
+
+        try {
+            await followRedirects(url, options);
+        } catch(error) {
+            expect(error).to.be.an.instanceOf(Error);
+            expect(error.message).to.be.equal('Redirect limit reached');
+        }
     });
 });

@@ -17,7 +17,9 @@
     "redirect",
     "redirects",
     "url",
+    "site",
     "follow",
+    "follower",
     "website"
   ],
   "author": "Daan Kloetstra",
