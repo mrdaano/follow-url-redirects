@@ -1,5 +1,6 @@
 const http = require('http');
 const https = require('https')
+const RedirectLimitError = require('./errors/RedirectLimitError');
 
 /**
  * Follows all 300x errors
@@ -59,7 +60,7 @@ function followRedirects(url, opts = {}) {
                 if (location && isRedirect(res.statusCode)) {
 
                     if (requestCounter >= opts.maxRedirects) {
-                        reject(new Error('Redirect limit reached'));
+                        reject(new RedirectLimitError('Redirect limit reached', redirectChain));
                         return;
                     }
 

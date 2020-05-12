@@ -223,4 +223,29 @@ describe('follow-url-redirects', () => {
             expect(error.message).to.be.equal('Redirect limit reached');
         }
     });
+
+    it('Should throw a error with the current redirect chain when limit is reached', async () => {
+        const url = `${baseUrl}redirect/slow`;
+        const options = {
+            maxRedirects: 1
+        };
+        const redirects = [
+            {
+                url,
+                code: 301
+            },
+            {
+                url: `${baseUrl}redirect/301`,
+                code: 301
+            }
+        ];
+
+        try {
+            await followRedirects(url, options);
+        } catch(error) {
+            expect(error).to.be.an.instanceOf(Error);
+            expect(error.message).to.be.equal('Redirect limit reached');
+            expect(error.redirects).to.be.eql(redirects);
+        }
+    });
 });
