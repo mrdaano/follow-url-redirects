@@ -1,5 +1,6 @@
 const http = require('http');
 const https = require('https')
+const qs = require('query-string')
 const RedirectLimitError = require('./errors/RedirectLimitError');
 
 /**
@@ -51,10 +52,13 @@ function followRedirects(url, opts = {}) {
 
             request.on('response', (res) => {
                 let { location } = res.headers;
-
+                const queryParamsObj = qs.parse(new URL(urlToGo.toString()).search)
+                const queryParamsArr = Object.keys(queryParamsObj).map((k) => ({ key: k, value: queryParamsObj[k] }))
                 redirectChain.push({
                     url: urlToGo.toString(),
-                    code: res.statusCode
+                    code: res.statusCode,
+                    cookies: res.headers['set-cookie'] || [],
+                    queryParams: queryParamsArr || []
                 });
 
                 if (location && isRedirect(res.statusCode)) {
