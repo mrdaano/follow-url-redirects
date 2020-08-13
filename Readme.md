@@ -17,15 +17,21 @@ This example returns the following result:
 [
     {
         "url": "https://bit.ly/3cScyDF",
-        "code": 301
+        "code": 301,
+        "cookies": {},
+        "queryParams": {}
     },
     {
         "url": "http://google.com/",
-        "code": 301
+        "code": 301,
+        "cookies": {},
+        "queryParams": {}
     },
     {
         "url": "http://www.google.com/",
-        "code": 200
+        "code": 200,
+        "cookies": {},
+        "queryParams": {}
     }
 ]
 ```
