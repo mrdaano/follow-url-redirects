@@ -47,7 +47,9 @@ describe('follow-url-redirects', () => {
         const expected = [
             {
                 url: url,
-                code: 200
+                code: 200,
+                cookies: {},
+                queryParams: {}
             }
         ];
 
@@ -59,11 +61,15 @@ describe('follow-url-redirects', () => {
         const expected = [
             {
                 url: url,
-                code: 301
+                code: 301,
+                cookies: {},
+                queryParams: {}
             },
             {
                 url: `${baseUrl}hello`,
-                code: 200
+                code: 200,
+                cookies: {},
+                queryParams: {}
             }
         ];
 
@@ -75,11 +81,15 @@ describe('follow-url-redirects', () => {
         const expected = [
             {
                 url: url,
-                code: 302
+                code: 302,
+                cookies: {},
+                queryParams: {}
             },
             {
                 url: `${baseUrl}hello`,
-                code: 200
+                code: 200,
+                cookies: {},
+                queryParams: {}
             }
         ];
 
@@ -91,11 +101,15 @@ describe('follow-url-redirects', () => {
         const expected = [
             {
                 url: url,
-                code: 303
+                code: 303,
+                cookies: {},
+                queryParams: {}
             },
             {
                 url: `${baseUrl}hello`,
-                code: 200
+                code: 200,
+                cookies: {},
+                queryParams: {}
             }
         ];
 
@@ -107,11 +121,15 @@ describe('follow-url-redirects', () => {
         const expected = [
             {
                 url: url,
-                code: 307
+                code: 307,
+                cookies: {},
+                queryParams: {}
             },
             {
                 url: `${baseUrl}hello`,
-                code: 200
+                code: 200,
+                cookies: {},
+                queryParams: {}
             }
         ];
 
@@ -123,11 +141,15 @@ describe('follow-url-redirects', () => {
         const expected = [
             {
                 url: url,
-                code: 308
+                code: 308,
+                cookies: {},
+                queryParams: {}
             },
             {
                 url: `${baseUrl}hello`,
-                code: 200
+                code: 200,
+                cookies: {},
+                queryParams: {}
             }
         ];
 
@@ -139,15 +161,21 @@ describe('follow-url-redirects', () => {
         const expected = [
             {
                 url: url,
-                code: 301
+                code: 301,
+                cookies: {},
+                queryParams: {}
             },
             {
                 url: `${baseUrl}redirect/301`,
-                code: 301
+                code: 301,
+                cookies: {},
+                queryParams: {}
             },
             {
                 url: `${baseUrl}hello`,
-                code: 200
+                code: 200,
+                cookies: {},
+                queryParams: {}
             }
         ];
 
@@ -159,15 +187,21 @@ describe('follow-url-redirects', () => {
         const expected = [
             {
                 url: url,
-                code: 301
+                code: 301,
+                cookies: {},
+                queryParams: {}
             },
             {
                 url: `${baseUrl}redirect/301`,
-                code: 301
+                code: 301,
+                cookies: {},
+                queryParams: {}
             },
             {
                 url: `${baseUrl}hello`,
-                code: 200
+                code: 200,
+                cookies: {},
+                queryParams: {}
             }
         ];
 
@@ -179,19 +213,27 @@ describe('follow-url-redirects', () => {
         const expected = [
             {
                 url: url,
-                code: 301
+                code: 301,
+                cookies: {},
+                queryParams: {}
             },
             {
                 url: `${baseUrl}redirect/slow`,
-                code: 301
+                code: 301,
+                cookies: {},
+                queryParams: {}
             },
             {
                 url: `${baseUrl}redirect/301`,
-                code: 301
+                code: 301,
+                cookies: {},
+                queryParams: {}
             },
             {
                 url: `${baseUrl}hello`,
-                code: 200
+                code: 200,
+                cookies: {},
+                queryParams: {}
             }
         ];
 
@@ -203,7 +245,9 @@ describe('follow-url-redirects', () => {
         const expected = [
             {
                 url: url,
-                code: 301
+                code: 301,
+                cookies: {},
+                queryParams: {}
             }
         ];
 
@@ -232,11 +276,15 @@ describe('follow-url-redirects', () => {
         const redirects = [
             {
                 url,
-                code: 301
+                code: 301,
+                cookies: {},
+                queryParams: {}
             },
             {
                 url: `${baseUrl}redirect/301`,
-                code: 301
+                code: 301,
+                cookies: {},
+                queryParams: {}
             }
         ];
 
@@ -247,5 +295,42 @@ describe('follow-url-redirects', () => {
             expect(error.message).to.be.equal('Redirect limit reached');
             expect(error.redirects).to.be.eql(redirects);
         }
+    });
+
+    it('Returns the cookies of a request', async () => {
+        const url = `${baseUrl}cookie`;
+        const expected = [
+            {
+                url: url,
+                code: 200,
+                cookies:
+                {
+                    hello: 'world'
+                },
+                queryParams: {}
+            }
+        ];
+
+        expect((await followRedirects(url))).to.be.eql(expected);
+    });
+
+    it('Returns the cookies and query params of a request', async () => {
+        const url = `${baseUrl}cookie?hello=world&test=1`;
+        const expected = [
+            {
+                url: url,
+                code: 200,
+                cookies:
+                {
+                    hello: 'world'
+                },
+                queryParams: {
+                    hello: 'world',
+                    test: '1'
+                }
+            }
+        ];
+
+        expect((await followRedirects(url))).to.be.eql(expected);
     });
 });

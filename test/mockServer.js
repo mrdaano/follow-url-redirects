@@ -29,6 +29,12 @@ class MockServer {
 			res.statusCode = 200;
 			res.setHeader('Content-Type', 'text/plain');
 			res.end('world');
+		}
+		
+		if (path === '/cookie') {
+			res.statusCode = 200;
+			res.setHeader('Set-Cookie', 'hello=world');
+			res.end();
         }
         
         if (path === '/redirect/301') {
