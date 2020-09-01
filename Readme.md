@@ -43,7 +43,7 @@ There is also the possibility to add extra options as a 2nd parameter.
 | maxRedirects | 10 | The maximum number of redirects. |
 ### Example with options
 ```javascript
-const followRedirects = require('follow-url-redirects');
+const followUrlRedirects = require('follow-url-redirects');
 
 const options = {
     timeout: 3 * 1000, // 3 seconds
