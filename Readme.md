@@ -8,7 +8,7 @@ With this Node JS package you can follow all redirects from a given url.
 In this example, a bit.ly link has been created that will eventually lead to google.com.
 
 ```javascript
-const followRedirects = require('follow-url-redirects');
+const followUrlRedirects = require('follow-url-redirects');
 
 followUrlRedirects('https://bit.ly/3cScyDF').then(result => console.log(result));
 ```
